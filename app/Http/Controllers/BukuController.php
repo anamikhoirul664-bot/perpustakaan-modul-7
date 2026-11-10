@@ -37,13 +37,14 @@ class BukuController extends Controller
         return view('buku.show', compact('buku'));
     }
 
-    // Pencarian buku - versi rentan untuk praktikum A2
+    // Pencarian buku - versi rentan untuk praktikum A2 udah di ganti
         public function cari(Request $request)
         {
             $judul = $request->query('judul');
 
             $hasil = DB::select(
-                "SELECT * FROM bukus WHERE judul = '$judul'"
+                'SELECT * FROM bukus WHERE judul = ?',
+                [$judul]
             );
 
             return response()->json($hasil);

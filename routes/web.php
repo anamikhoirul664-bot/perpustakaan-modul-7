@@ -181,10 +181,8 @@ require __DIR__.'/auth.php';
 Route::get('/buku-cari', [BukuController::class, 'cari'])
     ->middleware('auth')
     ->name('buku.cari');
-
-Route::get('/buku/{buku}/hapus', [ApiBukuController::class, 'destroy'])
-    ->middleware('auth')
-    ->name('buku.hapus');
+Route::delete('/buku/{id}', [ApiBukuController::class, 'destroy'])
+    ->name('buku.destroy');
 
 Route::get('/peminjaman/{id}', [PeminjamanController::class, 'show'])
     ->middleware('auth')

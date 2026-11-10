@@ -155,7 +155,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item['kategori'] }}</td>
                                 <td>
-                                    <strong>{!! $item['judul'] !!}</strong>
+                                    <strong>{{ $item['judul'] }}</strong>
                                 </td>
                                 <td>{{ $item['penulis'] }}</td>
                                 <td>{{ $item['tahun'] }}</td>
@@ -402,7 +402,7 @@ if (bolehKelolaBuku) {
     // UBAH BUKU
     // ========================================
 
-    async function ubahBuku(id) {
+    window.ubahBuku = async function(id) {
         try {
             const response = await fetch(`/api/buku/${id}`, {
                 headers: {
@@ -459,51 +459,51 @@ if (bolehKelolaBuku) {
         pesan.innerHTML = '';
     });
 
+// ========================================
+// HAPUS BUKU
+// ========================================
 
-    // ========================================
-    // HAPUS BUKU
-    // ========================================
+window.hapusBuku = async function(id) {
+    const yakin = confirm(
+        'Apakah kamu yakin ingin menghapus buku ini?'
+    );
 
-    async function hapusBuku(id) {
-        const yakin = confirm(
-            'Apakah kamu yakin ingin menghapus buku ini?'
-        );
-
-        if (!yakin) {
-            return;
-        }
-
-        try {
-            const response = await fetch(`/api/buku/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector(
-                        'meta[name="csrf-token"]'
-                    ).content
-                }
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(
-                    result.message || 'Gagal menghapus buku.'
-                );
-            }
-
-            tampilkanPesan(
-                result.message || 'Buku berhasil dihapus.',
-                'success'
-            );
-
-            await ambilBuku();
-
-        } catch (error) {
-            tampilkanPesan(error.message, 'error');
-        }
+    if (!yakin) {
+        return;
     }
 
+    try {
+        const response = await fetch(`/buku/${id}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRF-TOKEN': document.querySelector(
+                    'meta[name="csrf-token"]'
+                ).content
+            },
+            body: '_method=DELETE'
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                result.message || 'Gagal menghapus buku.'
+            );
+        }
+
+        tampilkanPesan(
+            result.message || 'Buku berhasil dihapus.',
+            'success'
+        );
+
+        await ambilBuku();
+
+    } catch (error) {
+        tampilkanPesan(error.message, 'error');
+    }
+}
 
     // ========================================
     // AMBIL KATEGORI
