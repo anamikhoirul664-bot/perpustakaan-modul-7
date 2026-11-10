@@ -140,6 +140,62 @@
             <p>Kelola data peminjaman dan pengembalian buku perpustakaan.</p>
         </div>
 
+
+@can('kelola peminjaman')
+    <button type="button"
+            onclick="document.getElementById('formTambahPeminjaman').style.display = 'block'"
+            class="btn-return"
+            style="margin-top: 20px;">
+        + Tambah Peminjaman
+    </button>
+
+    <div id="formTambahPeminjaman"
+         style="display:none; background:white; padding:25px; border-radius:15px; margin-top:20px;">
+
+        <h3>Tambah Peminjaman Buku</h3>
+
+        <form method="POST" action="{{ route('peminjaman.store') }}">
+            @csrf
+
+            <label>Anggota</label>
+            <select name="anggota_id" required style="width:100%; padding:10px; margin:10px 0;">
+                <option value="">-- Pilih Anggota --</option>
+                @foreach($anggota as $a)
+                    <option value="{{ $a->id }}">{{ $a->nama }}</option>
+                @endforeach
+            </select>
+
+            <label>Buku</label>
+            <select name="buku_id" required style="width:100%; padding:10px; margin:10px 0;">
+                <option value="">-- Pilih Buku --</option>
+                @foreach($buku as $b)
+                    <option value="{{ $b->id }}">{{ $b->judul }}</option>
+                @endforeach
+            </select>
+
+            <label>Tanggal Pinjam</label>
+            <input type="date" name="tanggal_pinjam"
+                   value="{{ date('Y-m-d') }}" required
+                   style="width:100%; padding:10px; margin:10px 0;">
+
+            <label>Batas Kembali</label>
+            <input type="date" name="tanggal_kembali" required
+                   style="width:100%; padding:10px; margin:10px 0;">
+
+            <button type="submit" class="btn-return">
+                Simpan Peminjaman
+            </button>
+
+            <button type="button"
+                    onclick="document.getElementById('formTambahPeminjaman').style.display = 'none'"
+                    class="btn-return">
+                Batal
+            </button>
+        </form>
+    </div>
+@endcan
+
+
         @if(session('success'))
             <div class="alert-success">{{ session('success') }}</div>
         @endif

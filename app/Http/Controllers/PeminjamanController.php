@@ -7,17 +7,26 @@ use App\Models\Anggota;
 use App\Models\Buku;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+
 class PeminjamanController extends Controller
 {
     // Menampilkan semua peminjaman untuk Admin dan Petugas
-    public function index()
-    {
-        $peminjaman = Peminjaman::with(['anggota', 'buku'])
-            ->latest()
-            ->get();
+public function index()
+{
+    $peminjaman = Peminjaman::with(['anggota', 'buku'])
+        ->latest()
+        ->get();
 
-        return view('peminjaman.index', compact('peminjaman'));
-    }
+    $anggota = Anggota::all();
+    $buku = Buku::all();
+
+    return view('peminjaman.index', compact(
+        'peminjaman',
+        'anggota',
+        'buku'
+    ));
+}
 
     // Menyimpan data peminjaman
     public function store(Request $request)
@@ -57,13 +66,18 @@ class PeminjamanController extends Controller
     }
 
     // Menampilkan detail peminjaman
-    public function show($id)
-    {
-        $peminjaman = Peminjaman::with(['anggota', 'buku'])
-            ->findOrFail($id);
 
-        return view('peminjaman.show', compact('peminjaman'));
-    }
+public function show($id)
+{
+    $peminjaman = Peminjaman::with(['anggota', 'buku'])
+        ->findOrFail($id);
+
+    // Memeriksa hak akses menggunakan Policy
+    Gate::authorize('view', $peminjaman);
+
+    return view('peminjaman.show', compact('peminjaman'));
+}
+
 
     // Riwayat peminjaman milik siswa yang sedang login
     public function riwayatSaya()
