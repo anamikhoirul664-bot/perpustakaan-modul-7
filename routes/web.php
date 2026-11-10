@@ -4,9 +4,10 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\PeminjamanController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PenggunaController;
 use App\Http\Controllers\Api\BukuController as ApiBukuController;
+use Illuminate\Support\Facades\Route;
+
 // ==========================================
 // HALAMAN UTAMA
 // ==========================================
@@ -48,9 +49,16 @@ Route::middleware(['auth', 'permission:akses dashboard admin'])->group(function 
 
 });
 
+
+// ==========================================
+// KELOLA PENGGUNA
+// ==========================================
+
 Route::middleware(['auth', 'permission:kelola data pengguna'])->group(function () {
+
     Route::resource('pengguna', PenggunaController::class)
         ->except(['show']);
+
 });
 
 
@@ -68,45 +76,38 @@ Route::middleware(['auth', 'permission:akses dashboard petugas'])->group(functio
 
 
 // ==========================================
-// KELOLA BUKU KHUSUS ADMIN
+// KELOLA BUKU ADMIN DAN PETUGAS
 // ==========================================
 
-Route::middleware(['auth', 'permission:kelola data buku'])->group(function () {
+Route::middleware(['auth', 'can:kelola-buku'])->group(function () {
 
-    // Halaman tambah buku
     Route::get('/buku/create', [BukuController::class, 'create'])
         ->name('buku.create');
 
-    // Proses menyimpan buku
     Route::post('/buku', [BukuController::class, 'store'])
         ->name('buku.store');
 
-    // Halaman edit buku
     Route::get('/buku/{id}/edit', [BukuController::class, 'edit'])
         ->name('buku.edit');
 
-    // Proses memperbarui buku
     Route::put('/buku/{id}', [BukuController::class, 'update'])
         ->name('buku.update');
 
-    // Proses menghapus buku
-    Route::delete('/buku/{id}', [BukuController::class, 'destroy'])
+    Route::delete('/buku/{id}', [ApiBukuController::class, 'destroy'])
         ->name('buku.destroy');
 
 });
 
 
 // ==========================================
-// LIHAT BUKU (ADMIN, PETUGAS, SISWA)
+// LIHAT BUKU ADMIN, PETUGAS, DAN SISWA
 // ==========================================
 
 Route::middleware(['auth', 'permission:lihat daftar buku'])->group(function () {
 
-    // Daftar buku
     Route::get('/buku', [BukuController::class, 'index'])
         ->name('buku.index');
 
-    // Detail buku
     Route::get('/buku/{id}', [BukuController::class, 'show'])
         ->name('buku.show');
 
@@ -132,7 +133,7 @@ Route::middleware('auth')->group(function () {
 
 
 // ==========================================
-// PEMINJAMAN (ADMIN DAN PETUGAS)
+// PEMINJAMAN ADMIN DAN PETUGAS
 // ==========================================
 
 Route::middleware([
@@ -140,15 +141,12 @@ Route::middleware([
     'permission:kelola peminjaman',
 ])->group(function () {
 
-    // Daftar peminjaman
     Route::get('/peminjaman', [PeminjamanController::class, 'index'])
         ->name('peminjaman.index');
 
-    // Menyimpan peminjaman
     Route::post('/peminjaman', [PeminjamanController::class, 'store'])
         ->name('peminjaman.store');
 
-    // Pengembalian buku
     Route::patch('/peminjaman/{id}/kembalikan', [
         PeminjamanController::class,
         'kembalikan'
@@ -172,18 +170,25 @@ Route::get('/riwayat-peminjaman', [
 
 
 // ==========================================
-// AUTHENTICATION
+// A2 - PENCARIAN BUKU
 // ==========================================
 
-require __DIR__.'/auth.php';
-
-// A2 - Route pencarian rentan SQL Injection
 Route::get('/buku-cari', [BukuController::class, 'cari'])
     ->middleware('auth')
     ->name('buku.cari');
-Route::delete('/buku/{id}', [ApiBukuController::class, 'destroy'])
-    ->name('buku.destroy');
+
+
+// ==========================================
+// A4 - DETAIL PEMINJAMAN
+// ==========================================
 
 Route::get('/peminjaman/{id}', [PeminjamanController::class, 'show'])
     ->middleware('auth')
     ->name('peminjaman.show');
+
+
+// ==========================================
+// AUTHENTICATION
+// ==========================================
+
+require __DIR__.'/auth.php';

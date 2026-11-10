@@ -9,9 +9,11 @@
 
 @section('content')
 
-@php
-    $bolehKelolaBuku = auth()->user()->can('kelola data buku');
-@endphp
+@can('kelola-buku')
+    @php $bolehKelolaBuku = true; @endphp
+@else
+    @php $bolehKelolaBuku = false; @endphp
+@endcan
 
 <section class="page-header">
     <div class="container">
@@ -27,8 +29,8 @@
     <div class="container">
 
         {{-- FORM TAMBAH DAN EDIT KHUSUS ADMIN --}}
-        @if($bolehKelolaBuku)
-            <div class="form-card">
+    @can('kelola-buku')
+        <div class="form-card">
 
                 <div class="form-header">
                     <div>
@@ -113,7 +115,7 @@
                 </form>
 
             </div>
-        @endif
+        @endcan
 
         {{-- DAFTAR BUKU --}}
         <div class="table-card">
@@ -143,9 +145,9 @@
                             <th>Penulis</th>
                             <th>Tahun</th>
 
-                            @if($bolehKelolaBuku)
+                            @can('kelola-buku')
                                 <th>Aksi</th>
-                            @endif
+                            @endcan
                         </tr>
                     </thead>
 
@@ -174,7 +176,11 @@
 </section>
 
 <script>
-const bolehKelolaBuku = @json($bolehKelolaBuku);
+@can('kelola-buku')
+    const bolehKelolaBuku = true;
+@else
+    const bolehKelolaBuku = false;
+@endcan
 
 const tabelBuku = document.getElementById('tabelBuku');
 const loading = document.getElementById('loading');
