@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Buku;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BukuController extends Controller
 {
@@ -33,6 +36,18 @@ class BukuController extends Controller
 
         return view('buku.show', compact('buku'));
     }
+
+    // Pencarian buku - versi rentan untuk praktikum A2
+        public function cari(Request $request)
+        {
+            $judul = $request->query('judul');
+
+            $hasil = DB::select(
+                "SELECT * FROM bukus WHERE judul = '$judul'"
+            );
+
+            return response()->json($hasil);
+        }
 }
 
 

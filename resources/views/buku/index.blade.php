@@ -149,7 +149,22 @@
                         </tr>
                     </thead>
 
-                    <tbody id="tabelBuku"></tbody>
+                    <tbody id="tabelBuku">
+                        @foreach($buku as $item)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $item['kategori'] }}</td>
+                                <td>
+                                    <strong>{!! $item['judul'] !!}</strong>
+                                </td>
+                                <td>{{ $item['penulis'] }}</td>
+                                <td>{{ $item['tahun'] }}</td>
+                                @if($bolehKelolaBuku)
+                                    <td>-</td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    </tbody>
                 </table>
             </div>
 

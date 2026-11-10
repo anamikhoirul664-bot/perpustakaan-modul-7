@@ -6,6 +6,7 @@ use App\Http\Controllers\BukuController;
 use App\Http\Controllers\PeminjamanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PenggunaController;
+use App\Http\Controllers\Api\BukuController as ApiBukuController;
 // ==========================================
 // HALAMAN UTAMA
 // ==========================================
@@ -175,3 +176,16 @@ Route::get('/riwayat-peminjaman', [
 // ==========================================
 
 require __DIR__.'/auth.php';
+
+// A2 - Route pencarian rentan SQL Injection
+Route::get('/buku-cari', [BukuController::class, 'cari'])
+    ->middleware('auth')
+    ->name('buku.cari');
+
+Route::get('/buku/{buku}/hapus', [ApiBukuController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('buku.hapus');
+
+Route::get('/peminjaman/{id}', [PeminjamanController::class, 'show'])
+    ->middleware('auth')
+    ->name('peminjaman.show');

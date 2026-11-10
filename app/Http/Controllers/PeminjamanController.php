@@ -56,6 +56,15 @@ class PeminjamanController extends Controller
         return back()->with('success', 'Buku berhasil dikembalikan.');
     }
 
+    // Menampilkan detail peminjaman
+    public function show($id)
+    {
+        $peminjaman = Peminjaman::with(['anggota', 'buku'])
+            ->findOrFail($id);
+
+        return view('peminjaman.show', compact('peminjaman'));
+    }
+
     // Riwayat peminjaman milik siswa yang sedang login
     public function riwayatSaya()
     {
