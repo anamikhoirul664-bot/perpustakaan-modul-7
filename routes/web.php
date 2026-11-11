@@ -192,3 +192,4 @@ Route::get('/peminjaman/{id}', [PeminjamanController::class, 'show'])
 // ==========================================
 
 require __DIR__.'/auth.php';
+
