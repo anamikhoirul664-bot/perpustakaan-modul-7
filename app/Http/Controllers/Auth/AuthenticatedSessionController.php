@@ -26,11 +26,6 @@ public function store(LoginRequest $request): RedirectResponse
 {
     $request->authenticate();
 
-    dd([
-        'status' => 'Login berhasil',
-        'user_id' => Auth::id(),
-    ]);
-
     $request->session()->regenerate();
 
     return redirect()->intended(route('dashboard', absolute: false));

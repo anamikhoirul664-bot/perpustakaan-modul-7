@@ -191,5 +191,13 @@ Route::get('/peminjaman/{id}', [PeminjamanController::class, 'show'])
 // AUTHENTICATION
 // ==========================================
 
+Route::get('/cek-session', function (\Illuminate\Http\Request $request) {
+    return response()->json([
+        'authenticated' => auth()->check(),
+        'user_id' => auth()->id(),
+        'session_id' => $request->session()->getId(),
+    ]);
+});
+
 require __DIR__.'/auth.php';
 
